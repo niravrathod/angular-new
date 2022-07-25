@@ -1,0 +1,177 @@
+<div class="control-section">
+  <ejs-treegrid
+    #treegrid
+    [dataSource]="data"
+    height="400"
+    childMapping="subtasks"
+    [treeColumnIndex]="0"
+    [contextMenuItems]="contextMenuItems"
+    (contextMenuOpen)="contextMenuOpen($event)"
+    (contextMenuClick)="contextMenuClick($event)"
+    [columns]="treegridColumns"
+  >
+    <!-- <e-columns>
+      <e-column
+        freeze="Center"
+        field="taskID"
+        headerText="Task ID"
+        width="80"
+        textAlign="Right"
+        editType="numericedit"
+      ></e-column>
+      <e-column
+        freeze="Center"
+        field="taskName"
+        headerText="Task Name"
+        width="210"
+      ></e-column>
+      <e-column
+        freeze="Center"
+        field="startDate"
+        headerText="Start Date"
+        width="100"
+        format="yMd"
+        textAlign="Right"
+        editType="datepickeredit"
+      ></e-column>
+      <e-column
+        freeze="Center"
+        field="endDate"
+        headerText="End Date"
+        width="100"
+        format="yMd"
+        textAlign="Right"
+        editType="datepickeredit"
+      ></e-column>
+      <e-column
+        freeze="Center"
+        field="duration"
+        headerText="Duration"
+        width="80"
+        textAlign="Right"
+        editType="numericedit"
+      ></e-column>
+      <e-column
+        freeze="Center"
+        field="progress"
+        headerText="Progress"
+        width="80"
+        textAlign="Right"
+        editType="numericedit"
+      ></e-column>
+      <e-column
+        freeze="Center"
+        field="priority"
+        headerText="Priority"
+        width="90"
+        editType="numericedit"
+      ></e-column>
+    </e-columns> -->
+  </ejs-treegrid>
+  <ejs-dialog
+    #alertDialog
+    [buttons]="dlgButtons"
+    [header]="header"
+    [animationSettings]="animationSettings"
+    [content]="content"
+    [showCloseIcon]="showCloseIcon"
+    [target]="target"
+    [width]="width"
+    [visible]="visible"
+  >
+  </ejs-dialog>
+  
+
+  <div class="col-lg-12">
+    <div class="control_wrapper" id="control_wrapper" style="margin: 10px auto;">
+     <ejs-dialog id="newcolumnDialog" #newcolumnDialog width= 'new_column_width'
+      [showCloseIcon]='new_column_showCloseIcon' [animationSettings]="new_column_animationSettings" [header]="new_column_header" [visible]="new_column_visible" target='.control-section'>
+        <!-- <ng-template #content> -->
+            <form #newcolForm="ngForm" (ngSubmit)="addNewCol(newcolForm)"  novalidate>
+                <div class="form-group" style="padding-top: 11px;">
+                    <div class="e-float-input">
+                        <input type="text" id="column_name" #column_nameval='ngModel' name="column_name" required ngModel>
+                        <span class="e-float-line"></span>
+                        <label class="e-float-text e-label-top" for="column_name">Column Name <span class="e-error">*</span></label>
+                        <div *ngIf="(column_nameval.invalid && (column_nameval.dirty || column_nameval.touched))">
+                            <div class="e-error" *ngIf="column_nameval.errors.required">
+                                * Enter column name
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="padding-top: 11px;">
+                    <label class="e-label-top" for="data_type">Data Type <span class="e-error">*</span></label>
+                    <ejs-dropdownlist name="data_type" #book='ngModel' [(ngModel)]='newcolForm.data_type'
+                                [dataSource]='data_type' placeholder='Select Data Type' floatLabelType='Auto' (change)='newcolumnonChange($event)' required="true">
+                            </ejs-dropdownlist>
+                </div>
+                <div class="form-group" style="padding-top: 11px;">
+                  <div class="e-float-input" id="default_value_div">
+                    <label class="e-label-top" for="default_value">Default Value <span class="e-error">*</span></label>
+                      <!-- <input type="text" id="default_value" #default_valueval='ngModel' name="default_value" required ngModel> -->
+                      <ejs-textbox *ngIf="new_column_text" id="default_value" #default_valueval='ngModel' name="default_value" required ngModel>
+                      </ejs-textbox>
+
+                      <ejs-numerictextbox *ngIf="new_column_number" id="default_value" #default_valueval='ngModel' name="default_value" required ngModel>
+                      </ejs-numerictextbox>
+
+                      <ejs-checkbox *ngIf="new_column_bool" id="default_value" #default_valueval='ngModel' name="default_value" required ngModel>
+                      </ejs-checkbox>
+
+                      <ejs-datepicker *ngIf="new_column_date" id="default_value" #default_valueval='ngModel' name="default_value" required ngModel>
+                      </ejs-datepicker>
+
+                      <ejs-multiselect *ngIf="new_column_list" id="default_value" #default_valueval='ngModel' name="default_value" required ngModel allowCustomValue
+='true'            ></ejs-multiselect>
+                  </div>
+              </div>
+              <div class="form-group" style="padding-top: 11px;">
+                  <label class="e-label-top" for="non_blank">Non Blank </label>
+                  <ejs-checkbox id="non_blank" #non_blankval='ngModel' name="non_blank" ngModel>
+                  </ejs-checkbox>
+              </div>
+              <div class="form-group" style="padding-top: 11px;">
+                  <label class="e-label-top" for="minimum_col_width">Minimum Column Width <span class="e-error">*</span></label>
+                  <ejs-numerictextbox id="minimum_col_width" #minimum_col_widthval='ngModel' name="minimum_col_width" required ngModel>
+                  </ejs-numerictextbox>
+              </div>
+              <div class="form-group" style="padding-top: 11px;">
+                <label class="e-label-top" for="font_size">Font Size <span class="e-error">*</span></label>
+                <ejs-numerictextbox id="font_size" #font_sizeval='ngModel' name="font_size" required ngModel>
+                </ejs-numerictextbox>
+            </div>
+                <div class="form-group" style="padding-top: 11px;">
+                    <label class="e-label-top" for="font_color">Font Color <span class="e-error">*</span></label>
+                    <input ejs-colorpicker type="color" id="font_color" #font_colorval='ngModel' name="font_color" required ngModel>
+                </div>
+                <div class="form-group" style="padding-top: 11px;">
+                  <label class="e-label-top" for="background_color">Background Color <span class="e-error">*</span></label>
+                  <input ejs-colorpicker type="color" id="background_color" #background_colorval='ngModel' name="background_color" required ngModel>
+              </div>
+              <div class="form-group" style="padding-top: 11px;">
+                <label class="e-label-top" for="alignment">Alignment <span class="e-error">*</span></label>
+                <ejs-dropdownlist name="alignment" #book='ngModel' [(ngModel)]='newcolForm.alignment'
+                            [dataSource]='alignment' placeholder='Select Alignment' floatLabelType='Auto' required="true">
+                        </ejs-dropdownlist>
+            </div>
+                <div class="form-group" style="padding-top: 11px;">
+                  <label class="e-label-top" for="text_wrap">Text Wrap </label>
+                  <ejs-checkbox id="text_wrap" #text_wrapval='ngModel' name="text_wrap" ngModel>
+                  </ejs-checkbox>
+              </div>
+                <div class="form-group" style="padding-top: 11px;">
+                    <div class="submitBtn">
+                        <button class="submit-btn e-btn e-success" id="submit-btn" [disabled]="newcolForm.invalid" type="submit">Save</button>
+                        &nbsp;<button class="close-btn e-btn" id="close-btn" type="button" (click)= "closeNewCol()">Close</button>
+                        <!-- <div class="desc"><span>*This button is not a submit type and the form submit handled from externally.</span></div> -->
+                    </div>
+                </div>
+            </form>
+        <!-- </ng-template> -->
+      </ejs-dialog>
+
+</div>
+</div>
+
+</div>
